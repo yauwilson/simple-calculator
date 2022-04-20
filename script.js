@@ -1,13 +1,13 @@
 
 let userInput = '0';
 let inputStack = [];
+let currentDisplay = '';
 
 const displayBox = document.querySelector("#display-box");
 
 function operate(operator, x, y) {
     const a = Number(x);
     const b = Number(y);
-    console.log(operator, a, b)
     if (operator === '+') {
         return (a + b)
     } else if (operator === '-') {
@@ -49,6 +49,11 @@ operators.forEach( (operator) => {
     operator.addEventListener('click', (e) => {
         selectedOp = e.target.getAttribute('data-value');
         if (selectedOp != '=') {
+            if (inputStack.length >= 2) {
+                userInput = operate(inputStack[1], inputStack[0], userInput);
+                inputStack = [];
+                displayBox.textContent = userInput;
+            }
             inputStack.push(userInput);
             inputStack.push(selectedOp);
             displayBox.textContent = `${userInput} ${selectedOp}`;
