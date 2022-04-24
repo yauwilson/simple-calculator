@@ -35,6 +35,12 @@ function addToInput(e) {
         } else {
             // do nothing
         }
+    } else if (input === 'backspace') {
+        if (userInput.length > 0) {
+            userInput = userInput.slice(0,-1);
+        } else {
+            userInput = '0';
+        }
     } else {
         userInput += input;
     }
@@ -76,8 +82,8 @@ operators.forEach( (operator) => {
             if (inputStack.length < 2) {
                 alert('Missing inputs!')
             } else {
-                userInput = operate(inputStack[1], inputStack[0], userInput);
-                displayBox.textContent = userInput;
+                displayBox.textContent = operate(inputStack[1], inputStack[0], userInput);
+                userInput = '0';
                 inputStack = [];
                 if (userInput % 1 === 0) {
                     decimal = false;
