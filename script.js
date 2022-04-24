@@ -2,21 +2,24 @@
 let userInput = '0';
 let inputStack = [];
 let currentDisplay = '';
+let decimal = false;
 
 const displayBox = document.querySelector("#display-box");
 
 function operate(operator, x, y) {
     const a = Number(x);
     const b = Number(y);
+    const result = 0;
     if (operator === '+') {
-        return (a + b)
+        value = (a + b)
     } else if (operator === '-') {
-        return (a - b)
+        value = (a - b)
     } else if (operator === 'x') {
-        return (a * b)
+        value = (a * b)
     } else if (operator === '/') {
-        return (a / b)
+        value = (a / b)
     }
+    return value.toFixed(9) / 1
 }
 
 function addToInput(e) {
@@ -25,13 +28,23 @@ function addToInput(e) {
     if (userInput === '0') {
         userInput = '';
     }
-    userInput += input;
+    if (input === '.') {
+        if (!decimal) {
+            userInput += input;
+            decimal = true
+        } else {
+            // do nothing
+        }
+    } else {
+        userInput += input;
+    }
     displayBox.textContent = userInput;
 }
 
 function clearInput(e) {
     userInput = '0';
     inputStack = [];
+    decimal = false;
     displayBox.textContent = userInput;
 }
 
@@ -58,11 +71,18 @@ operators.forEach( (operator) => {
             inputStack.push(selectedOp);
             displayBox.textContent = `${userInput} ${selectedOp}`;
             userInput = '0';
+            decimal = false;
         } else {
-            userInput = operate(inputStack[1], inputStack[0], userInput);
-            displayBox.textContent = userInput
-            inputStack = [];
-            displayBox.textContent = userInput;
+            if (inputStack.length < 2) {
+                alert('Missing inputs!')
+            } else {
+                userInput = operate(inputStack[1], inputStack[0], userInput);
+                displayBox.textContent = userInput;
+                inputStack = [];
+                if (userInput % 1 === 0) {
+                    decimal = false;
+                }
+            }
         }
     });
 })
