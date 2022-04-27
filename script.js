@@ -14,7 +14,7 @@ function operate(operator, x, y) {
         value = (a + b)
     } else if (operator === '-') {
         value = (a - b)
-    } else if (operator === 'x') {
+    } else if (operator === '*') {
         value = (a * b)
     } else if (operator === '/') {
         value = (a / b)
@@ -92,3 +92,85 @@ operators.forEach( (operator) => {
         }
     });
 })
+
+window.addEventListener('keydown', keyToInput);
+
+function keyToInput(e) {
+    console.log('key', e.key);
+    const pressedKey = e.key;
+
+    const input = pressedKey;
+
+    console.log('start of keyToInputSw with userInput = ', userInput);
+    if (userInput == '0') {
+        console.log('changed userInput to empty');
+        userInput = '';
+    }
+
+    switch (input) {
+        case 'Shift':
+            // do nothing
+            break;
+        case '.': {
+            console.log('decimal: ', decimal);
+            if (!decimal) {
+                userInput += input;
+                decimal = true;
+            } else {
+                // do nothing
+            }
+            break;
+        }
+        case 'Backspace': {
+            if (userInput.length > 0) {
+                userInput = userInput.slice(0,-1);
+            } else {
+                userInput = '0';
+            }
+            displayBox.textContent = userInput;
+            break;
+        }
+        case '+':
+        case '-':
+        case '*':
+        case '/': {
+            if (inputStack.length >= 2) {
+                userInput = operate(inputStack[1], inputStack[0], userInput);
+                inputStack = [];
+                displayBox.textContent = userInput;
+            }
+            inputStack.push(userInput);
+            inputStack.push(input);
+            displayBox.textContent = `${userInput} ${input}`;
+            userInput = '0';
+            decimal = false;
+            break;
+        }
+        case 'Enter':
+        case '=': {
+            if (inputStack.length < 2) {
+                alert('Missing inputs!')
+            } else {
+                userInput = operate(inputStack[1], inputStack[0], userInput);
+                console.log(userInput);
+                displayBox.textContent = userInput;
+                // userInput = '0';
+                inputStack = [];
+                console.log('userInput mod 1: ', userInput % 1);
+                if (userInput % 1 === 0) {
+                    console.log('userInput mod equal to 0, change decimal to false!')
+                    decimal = false;
+                } else {
+                    decimal = true;
+                }
+            }
+            break;
+        }
+        default:
+            userInput += input;
+            displayBox.textContent = userInput;
+    }
+    console.log('userInput', userInput);
+    console.log('inputStack', inputStack);
+    console.log('decimal: ', decimal);
+}
